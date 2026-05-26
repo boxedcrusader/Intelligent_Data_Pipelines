@@ -2,10 +2,11 @@ import json
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
+from app import models
 from app.db.psql import get_db
 from app.db.redis import get_redis
 from app.schemas import SensorCreate
-from app import models
+from app.services.alert_service import process_alerts
 
 router = APIRouter()
 
@@ -31,6 +32,8 @@ def ingest(reading: SensorCreate, db: Session = Depends(get_db)):
         "recorded_at": sensor_event.recorded_at.isoformat()
     })
     redis.setex(key, 60, payload)
+    
+    process_alerts(sensor_event.device_id, sensor_event.temperature, sensor_event.humidity, db)
 
     return {"status": "success", "id": sensor_event.id}
 
