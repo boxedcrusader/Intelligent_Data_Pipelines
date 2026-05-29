@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.gitignore
+
 # Virtual environment
 .venv/
 venv/
@@ -61,5 +63,3 @@ temp/
 # Secrets
 *.pem
 *.key
-
-.gitignore
